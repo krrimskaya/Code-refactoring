@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task4</title>
+  <style>
+    .canvas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 20px;
+    }
+    .square {
+      width: 50px;
+      height: 50px;
+      border: 1px solid black;
+      background-color: white;
+    }
+    .empty {
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shape Drawer</h1>
+  <button id="draw">Draw</button>
+  <button id="fill">Fill</button>
+  <div id="paint-level">Paint Level: 100%</div>
+  <div class="canvas" id="canvas"></div>
+
+  <script>
+    class Shape {
+      static total = 100;
+
+      constructor(size) {
+        this.size = size; // Розмір сторони квадрата
+      }
+
+      static fill() {
+        Shape.total = 100; // Заправляє фарбу до 100%
+        document.getElementById('paint-level').innerText = `Paint Level: ${Shape.total}%`;
+      }
+
+      draw() {
+        if (Shape.total > 0) {
+          // Витрата фарби на одну фігуру
+          const paintNeeded = 10; 
+          if (Shape.total >= paintNeeded) {
+            Shape.total -= paintNeeded;
+
+            // Додавання квадрата до полотна
+            const canvas = document.getElementById('canvas');
+            const square = document.createElement('div');
+            square.classList.add('square');
+            square.style.backgroundColor = `rgba(255, 0, 0, ${Shape.total / 100})`; // Залежність прозорості від кількості фарби
+            canvas.appendChild(square);
+
+            // Оновлення рівня фарби
+            document.getElementById('paint-level').innerText = `Paint Level: ${Shape.total}%`;
+          } else {
+            alert('Not enough paint! Please refill.');
+          }
+        } else {
+          alert('No paint left! Please refill.');
+        }
+      }
+    }
+
+    document.getElementById('draw').addEventListener('click', () => {
+      const shape = new Shape(50); // Створення нової фігури розміром 50px
+      shape.draw();
+    });
+
+    document.getElementById('fill').addEventListener('click', () => {
+      Shape.fill();
+    });
+  </script>
+</body>
+</html>

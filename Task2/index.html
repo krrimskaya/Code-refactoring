@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task2</title>
+  <script defer src="script.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+    .minis img {
+      width: 100px;
+      height: auto;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .fullsize img {
+      max-width: 100%;
+      max-height: 90vh;
+    }
+  </style>
+</head>
+<body>
+  <h1>JSON Image Viewer</h1>
+  <input type="text" id="jsonInput" placeholder='Enter JSON array, e.g. ["file1.jpg", "file2.gif"]'>
+  <button id="showImages">ПОКАЗАТИ</button>
+  <p id="status"></p>
+  <div class="minis"></div>
+  <div class="fullsize"></div>
+</body>
+</html>
