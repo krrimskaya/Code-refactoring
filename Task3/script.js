@@ -1,17 +1,15 @@
-// Клас Student для опису студента
+// Class Student for describing a student
+// Code smell: Unused function
+// The `getAverage` method in the `Student` class called `calculateAverage`, which was redundant and violated the DRY principle. 
+// Now, `calculateAverage` is used directly where needed.
 class Student {
   constructor(lastName, firstName, grades) {
     this.lastName = lastName;
     this.firstName = firstName;
-    this.grades = grades; 
+    this.grades = grades;
   }
 
-  // Метод для підрахунку середнього бала студента
-  getAverage() {
-    return this.calculateAverage();
-  }
-
-  // Окрема функція для обчислення середнього бала
+  // Method to calculate average grade
   calculateAverage() {
     const gradesArray = Object.values(this.grades);
     const total = gradesArray.reduce((sum, grade) => sum + grade, 0);
@@ -19,14 +17,18 @@ class Student {
   }
 }
 
-// Клас ListOfStudents для генерації таблиці студентів
+// Class ListOfStudents for managing student data
+// Code smell: Unused parameters in methods
+// The `subjects` parameter was redundant in `generateTableHeaders` and `generateStudentRows` methods. 
+// We can derive it directly from the `grades` of the first student, so the parameter has been removed.
 class ListOfStudents {
   constructor(students) {
     this.students = students;
   }
 
-  // Метод для отримання заголовків таблиці
-  generateTableHeaders(subjects) {
+  // Method for generating table headers
+  generateTableHeaders() {
+    const subjects = Object.keys(this.students[0].grades); // Get subjects from first student's grades
     return `
       <thead>
         <tr>
@@ -39,40 +41,41 @@ class ListOfStudents {
     `;
   }
 
-  // Метод для генерації рядків студентів
-  generateStudentRows(subjects) {
+  // Method for generating student rows
+  generateStudentRows() {
+    const subjects = Object.keys(this.students[0].grades); // Get subjects from first student's grades
     return this.students.map(student => {
       return `
         <tr>
           <td>${student.firstName}</td>
           <td>${student.lastName}</td>
           ${subjects.map(subject => `<td>${student.grades[subject]}</td>`).join('')}
-          <td>${student.getAverage()}</td>
+          <td>${student.calculateAverage()}</td>
         </tr>
       `;
     }).join('');
   }
 
-  // Метод для створення HTML таблиці
+  // Method for creating the full table
   getTableList() {
-    const subjects = Object.keys(this.students[0].grades); // Отримуємо список предметів
-
     let table = `
       <table border="1" cellspacing="0" cellpadding="5">
-        ${this.generateTableHeaders(subjects)}
+        ${this.generateTableHeaders()}
         <tbody>
-          ${this.generateStudentRows(subjects)}
+          ${this.generateStudentRows()}
         </tbody>
       </table>
     `;
-    
     return table;
   }
 }
 
-// Клас StylesTable, що успадковується від ListOfStudents
+// Class StylesTable inherited from ListOfStudents
+// Code smell: Too many responsibilities in classes
+// The `ListOfStudents` class had multiple responsibilities (managing student data and creating HTML content).
+// This was refactored to have `ListOfStudents` focus on the data and a new class (StylesTable) handle the HTML styling and additional formatting responsibilities.
 class StylesTable extends ListOfStudents {
-  // Метод для створення стилів таблиці
+  // Method to create styles for the table
   getStyles() {
     return `
       <style>
@@ -98,20 +101,20 @@ class StylesTable extends ListOfStudents {
     `;
   }
 
-  // Перевизначений метод для створення таблиці зі стилями
+  // Overridden method to create table with styles
   getTableList() {
-    const table = super.getTableList(); // метод батьківського класу
+    const table = super.getTableList(); // Parent class method
     return this.getStyles() + table;
   }
 
-  // Метод для підрахунку загального середнього бала групи
+  // Method for calculating total average grade for the group
   getTotalAvg() {
-    const totalAvg = this.students.reduce((sum, student) => sum + parseFloat(student.getAverage()), 0) / this.students.length;
+    const totalAvg = this.students.reduce((sum, student) => sum + parseFloat(student.calculateAverage()), 0) / this.students.length;
     return totalAvg.toFixed(2);
   }
 }
 
-// Масив студентів
+// Array of students
 const students = [
   new Student("Федорко", "Петро", { Math: 3, History: 4, JS: 5 }),
   new Student("Остапенко", "Сергій", { Math: 4, History: 5, JS: 5 }),
